@@ -1,6 +1,7 @@
 import asyncio
 import os
 import random
+import openai
 
 import discord
 from discord.ext import commands
@@ -8,6 +9,8 @@ from fuzzywuzzy import fuzz
 import yt_dlp
 
 TOKEN = os.getenv('DISCORD_TOKEN')
+openai.api_key = os.getenv('OPENAI_API_KEY')
+
 
 async def download_video(query):
     mp3_file_path = f"mp3_files/{query}.mp3"
@@ -125,6 +128,32 @@ async def play(ctx, *, query=None):
             await ctx.send("you need to be in a voice channel.")
     else:
         await ctx.send("Failed to download the song.")
+
+
+@bot.command()
+async def chat(ctx, *, message):
+    try:
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "You are a friendly chat friend."},
+                {"role": "user", "content": message}
+            ]
+        )
+        bot_response = response['choices'][0]['message']['content']
+        await ctx.send(bot_response)
+    except KeyError:
+        await ctx.send("An error occurred while processing the response.")
+    except Exception as e:
+        await ctx.send(f"An unexpected error occurred: {e}")
+
+
+
+@bot.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.CommandNotFound):
+        # Handle other types of errors or log them
+        print(f"An error occurred: {error}")
 
 
 if __name__ == '__main__':
