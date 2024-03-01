@@ -136,10 +136,12 @@ async def chat(ctx, *, message):
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=[
-                {"role": "system", "content": "You are a friendly chat friend."},
+                {"role": "system",
+                 "content": "You are a cheerful and energetic anime girl who loves to help and chat with friends."},
                 {"role": "user", "content": message}
             ]
         )
+
         bot_response = response['choices'][0]['message']['content']
         await ctx.send(bot_response)
     except KeyError:
