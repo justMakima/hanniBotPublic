@@ -131,7 +131,7 @@ async def play(ctx, *, query=None):
 
 
 @bot.command()
-async def chat(ctx, *, message):
+async def hanni(ctx, *, message):
     try:
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
